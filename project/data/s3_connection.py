@@ -18,8 +18,14 @@ class S3Connection:
         self.bucket = self.s3.Bucket(bucket_name)
         self.bucket_name = bucket_name
 
-    def upload_data(self, local_file, upload_dir):
-        self.bucket.upload_file(local_file, upload_dir)
+    def upload_data(self, data_dir, local_dir=None, df=None):
+        if df is not None:
+            csv_buffer = io.StringIO()
+            df.to_csv(csv_buffer, index=False)
+            self.client.put_object(Body=csv_buffer.getvalue(), Bucket=self.bucket_name, Key=data_dir)
+
+        elif data_dir:
+            self.bucket.upload_file(local_dir, data_dir)
 
     def update_data(self, data_dir, new_records_df):
         old_data = self.client.get_object(Bucket=self.bucket_name, Key=data_dir)['Body'].read().decode('utf-8')
