@@ -38,6 +38,11 @@ class S3Connection:
 
         return updated_df
 
+    def read_data(self, data_dir):
+        old_data = self.client.get_object(Bucket=self.bucket_name, Key=data_dir)['Body'].read().decode('utf-8')
+        df = pd.read_csv(io.StringIO(old_data))
+        return df
+
 
     def delete_data(self, data_dir):
         self.client.delete_object(Bucket=self.bucket_name, Key= data_dir)
