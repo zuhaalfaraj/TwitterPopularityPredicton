@@ -37,3 +37,7 @@ class S3Connection:
         self.client.put_object(Body=csv_buffer.getvalue(), Bucket=self.bucket_name, Key=data_dir)
 
         return updated_df
+
+
+    def delete_data(self, data_dir):
+        self.client.delete_object(Bucket=self.bucket_name, Key= data_dir)
