@@ -41,6 +41,8 @@ class Preprocess:
             text = ' '.join([contractions.fix(word) for word in text.split()])
 
         else:
+            text = re.sub(r'\s*[A-Za-z]+\b', '' , text)
+            text = text.rstrip()
             text = strip_harakat(text)
             text = ' '.join([word for word in text.split() if word not in (stop_words_ar)])
 
