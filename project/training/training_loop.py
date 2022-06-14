@@ -40,7 +40,6 @@ class TrainingLoop:
 
         for epoch in range(n_epoch):
             print('EPOCH {}:'.format(epoch_number + 1))
-            running_val_loss = 0
             avgtrain_loss = 0
             avgval_loss = 0
 
