@@ -111,7 +111,7 @@ class TrainingLoop:
 
             epoch_number += 1
 
-        self.model = S3Connection.read_model(self.model)
+        self.model = S3Connection.read_model(save_model_path, self.model)
         return self.model
 
     def calculate_metrics(self, model_output, y):
