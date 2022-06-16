@@ -2,7 +2,7 @@ import torch
 import wandb
 from tqdm import tqdm
 import sklearn
-
+from ..data.s3_connection import S3Connection
 
 class TrainingLoop:
     def __init__(self, model, criterion, optimizer, device, log_to_wandb=True):
@@ -107,12 +107,11 @@ class TrainingLoop:
             # Track best performance, and save the model's state
             if avgval_loss < best_vloss:
                 best_vloss = avgval_loss
-                torch.save(self.model.state_dict(), save_model_path)
+                S3Connection.upload_model(save_model_path, self.model)
 
             epoch_number += 1
 
-        self.model.load_state_dict(torch.load(save_model_path))
-
+        self.model = S3Connection.read_model(self.model)
         return self.model
 
     def calculate_metrics(self, model_output, y):
