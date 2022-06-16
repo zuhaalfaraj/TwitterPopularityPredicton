@@ -2,6 +2,7 @@ import boto3
 import io
 import pandas as pd
 import os
+import torch
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -26,6 +27,17 @@ class S3Connection:
 
         elif data_dir:
             self.bucket.upload_file(local_dir, data_dir)
+
+    def upload_model(self, model_dir, model):
+        buffer = io.BytesIO()
+        torch.save(model, buffer)
+        self.client.put_object(Bucket=self.bucket_name, Key=model_dir, Body=buffer.getvalue())
+
+    def read_model(self, model_dir, model):
+        mod = self.client.get_object(Bucket=self.bucket_name, Key=model_dir)['Body'].read()
+        buffer = io.BytesIO(mod)
+        model.load_state_dict(torch.load(buffer))
+        return model
 
     def update_data(self, data_dir, new_records_df):
         old_data = self.client.get_object(Bucket=self.bucket_name, Key=data_dir)['Body'].read().decode('utf-8')
