@@ -20,10 +20,10 @@ class Preprocess:
         return self.df_data[['text_processed', 'target']]
 
     def label_data(self):
-        self.df_data['popularity_index'] = (self.df_data['retweet_count'] + 1) * (
-        (self.df_data['favorite_count'] + 1)) / (.1 * (self.df_data['follower_count'] + 1))
-        self.df_data['target'] = self.df_data['popularity_index'].map(
-            lambda x: 0 if x < 0.1 else (1 if x >= 0.1 and x < 10 else 2))
+        eps_val = 0.001
+        self.df_data['target'] =  (self.df_data['retweet_count']+self.df_data['favorite_count']+eps_val)
+        self.df_data['target'] = (self.df_data['target'] - self.df_data['target'].min()) / (
+                    self.df_data['target'].max() - self.df_data['target'].min())
 
     @staticmethod
     def clean(text, language='en'):
