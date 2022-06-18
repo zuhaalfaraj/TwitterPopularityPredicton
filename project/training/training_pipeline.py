@@ -3,7 +3,7 @@ import torch
 from ..data.split_data import SplitData
 from .dataset_class import TextDataset
 from torch.utils.data import Dataset, DataLoader
-from .model import BertModel
+from .model import BERTRegressor
 from transformers import AdamW, BertTokenizer
 from training_loop import TrainingLoop
 from config import config
@@ -36,9 +36,7 @@ class TrainingPipeline:
         self.valid_loader = DataLoader(val_dataset, batch_size=config['VALID_BATCH_SIZE'], shuffle=True)
         self.test_loader = DataLoader(test_dataset, batch_size=config['TEST_BATCH_SIZE'], shuffle=True)
         # 5. Define the model
-        self.model = BertModel.from_pretrained(
-            config['model_checkpoint'],
-            num_labels=config['classes_num'])
+        self.model = BERTRegressor()
         self.model.to(self.device)
 
 
