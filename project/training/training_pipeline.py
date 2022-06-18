@@ -19,11 +19,6 @@ class TrainingPipeline:
         # 2. Split the dataset
         splitter = SplitData(0.2, 101)
         text_train, text_test, text_val = splitter(data.dropna())
-            # Data length
-        cls_0_len = len(text_train[text_train['target'] == 0])
-        cls_1_len = len(text_train[text_train['target'] == 0])
-        cls_2_len = len(text_train[text_train['target'] == 0])
-        data_len = len(text_train)
         # 3. Define the dataset class
         tokenizer = BertTokenizer.from_pretrained(
             config['model_checkpoint'], do_lower_case=True, do_basic_tokenize=True, never_split=None
@@ -42,9 +37,7 @@ class TrainingPipeline:
 
         # 6. Define the training criterion & optimizer.
         self.optimizer = AdamW(self.model.parameters(), lr=config['learning_rate'] )
-        classes_weight = [cls_0_len/data_len, cls_1_len/data_len, cls_2_len/data_len]
-        classes_weight = torch.tensor(classes_weight).to(self.device)
-        self.criterion = torch.nn.CrossEntropyLoss(weight=classes_weight)
+        self.criterion = torch.nn.MSELoss()
 
         # 7. Define the traininer
         self.trainer = TrainingLoop(self.model, self.criterion, self.optimizer, device=self.device)
