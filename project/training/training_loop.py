@@ -5,11 +5,12 @@ from ..data.s3_connection import S3Connection
 
 
 class TrainingLoop:
-    def __init__(self, model, criterion, optimizer, device):
+    def __init__(self, model, criterion, optimizer, device, metrics=None):
         self.model = model
         self.criterion = criterion
         self.optimizer = optimizer
         self.device = device
+        self.metrics = metrics
 
     def one_batch(self, batch, train=True):
         batch = {k: v.to(self.device) for k, v in batch.items()}
@@ -30,12 +31,12 @@ class TrainingLoop:
             loss.backward()
             self.optimizer.step()
 
-        return loss
+        return loss, outputs
 
-    def batch_loop(self, batch):
+    def batch_loop(self, batch, train=True):
         running_loss, avg_loss = 0, 0
         for i, b in enumerate(batch):
-            loss = self.one_batch(b, train=True)
+            loss, _ = self.one_batch(b, train=train)
             running_loss += loss
             avg_loss = running_loss / (i + 1)
 
@@ -61,11 +62,11 @@ class TrainingLoop:
             # Track best performance, and save the model's state
             if avgval_loss < best_vloss:
                 best_vloss = avgval_loss
-                S3Connection.upload_model(save_model_path, self.model)
+                S3Connection().upload_model(save_model_path, self.model)
 
             epoch_number += 1
 
-        self.model = S3Connection.read_model(save_model_path, self.model)
+        self.model = S3Connection().read_model(save_model_path, self.model)
 
         return self.model
 
