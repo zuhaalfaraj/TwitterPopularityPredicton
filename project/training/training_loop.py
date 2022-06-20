@@ -4,6 +4,7 @@ from tqdm import tqdm
 from ..data.s3_connection import S3Connection
 from config import config
 
+
 class TrainingLoop:
     def __init__(self, model, criterion, optimizer, device, metrics=None):
         self.model = model
@@ -112,6 +113,3 @@ class WandbTrainingLoop(TrainingLoop):
         wandb.log(logs)
 
         return avg_loss
-
-
-
