@@ -2,7 +2,7 @@ import torch
 import wandb
 from tqdm import tqdm
 from ..data.s3_connection import S3Connection
-
+from config import config
 
 class TrainingLoop:
     def __init__(self, model, criterion, optimizer, device, metrics=None):
@@ -70,6 +70,48 @@ class TrainingLoop:
 
         return self.model
 
+
+class WandbTrainingLoop(TrainingLoop):
+    def __init__(self, model, criterion, optimizer, device, metrics=None):
+        super().__init__(model, criterion, optimizer, device)
+
+        run = wandb.init(project="twitter_viral")
+
+        wandb.config['TRAIN_BATCH_SIZE'] = config['TRAIN_BATCH_SIZE']
+        wandb.config['VALID_BATCH_SIZE'] = config['VALID_BATCH_SIZE']
+        wandb.config['TEST_BATCH_SIZE'] = config['TEST_BATCH_SIZE']
+        wandb.config['device'] = device
+        wandb.config['model_checkpoint'] = config['model_checkpoint']
+        wandb.config['tokenizer_param'] = config['tokenizer_param']
+        wandb.config['splitting_ratio'] = config['splitting_ratio']
+        wandb.config['random_state'] = config['random_state']
+        wandb.config['classes_num'] = config['classes_num']
+        wandb.config['learning_rate'] = config['learning_rate']
+
+    def batch_loop(self, batch, train=True):
+        reporting_i = 100
+        running_loss, avg_loss = 0, 0
+        for i, b in enumerate(batch):
+            loss, outputs = self.one_batch(b, train=train)
+
+            running_loss += loss
+            avg_loss = running_loss / (i + 1)
+
+            if not i % reporting_i:
+                if train:
+                    logs = {'running_loss_train': avg_loss}
+                else:
+                    logs = {'running_loss_val': avg_loss}
+
+                wandb.log(logs)
+
+        if train:
+            logs = {'EPOCH_loss_train': avg_loss}
+        else:
+            logs = {'EPOCH_loss_val': avg_loss}
+        wandb.log(logs)
+
+        return avg_loss
 
 
 
