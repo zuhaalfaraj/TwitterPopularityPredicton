@@ -13,4 +13,6 @@ config['random_state'] = 101
 config['splitting_ratio'] = 0.2
 config['s3_data_dir'] = 'preprocessed_data/twitter_data.csv'
 
+config['s3_model_dir'] ='models/bst_model_reg.pt'
+
 
