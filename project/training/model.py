@@ -9,7 +9,7 @@ class BERTRegressor(nn.Module):
         super(BERTRegressor, self).__init__()
         D_in, D_out = 768, 1
 
-        self.bert = BertModel.from_pretrained(config['model_checkpoint'])
+        self.bert = BertModel.from_pretrained(config['model_checkpoint'], force_download=True)
         self.regressor = nn.Sequential(
             nn.Dropout(drop_rate),
             nn.Linear(D_in, D_out))
@@ -23,3 +23,5 @@ class BERTRegressor(nn.Module):
 class BertModel(BertForSequenceClassification):
     def forward(self, **kwargs):
         return super().forward(**kwargs).logits
+
+

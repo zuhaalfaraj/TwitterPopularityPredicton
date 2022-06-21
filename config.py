@@ -1,6 +1,4 @@
-import configparser
-
-config = configparser.ConfigParser()
+config = {}
 
 config['tokenizer_param'] = {"add_special_tokens": True, "padding": True, "truncation": True, 'max_length': 200}
 config['model_checkpoint'] ='bert-base-multilingual-cased'

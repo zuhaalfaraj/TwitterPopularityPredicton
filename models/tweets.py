@@ -1,26 +1,23 @@
 from project.data.s3_connection import S3Connection
 from project.data.preprocess_data import Preprocess
-from project.training.dataset_class import TextDataset
-from project.training.model import BertModel
+from project.training.model import BERTRegressor
 from transformers import BertTokenizer
 from config import config
 import torch
 
 
 class TweetModel:
-    def __int__(self, text, lang):
+    def __init__(self, text, lang):
         self.text= text
         self.lang = lang
         self.preprocessor = Preprocess
         self.tokenizer = BertTokenizer.from_pretrained(
             config['model_checkpoint'], do_lower_case=True, do_basic_tokenize=True,
             never_split=None)
-        self.model = BertModel()
-
+        self.model = BERTRegressor()
 
     def read_model(self):
         self.model = S3Connection().read_model(config['s3_model_dir'], self.model)
-
 
     def get_assessment(self):
         text = self.preprocessor(self.text,self.lang)

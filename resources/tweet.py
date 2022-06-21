@@ -1,5 +1,4 @@
 from flask_restful import Resource, reqparse
-from flask_jwt import jwt_required
 from models.tweets import TweetModel
 
 
@@ -16,7 +15,7 @@ class TweetResource(Resource):
 
     def get(self):
         data = TweetResource.parse.parse_args()
-        out = TweetModel(**data)
+        out = TweetModel(*data).get_assessment()
         if out:
             return {'Assessment result': float(out)}
         return {"message": "not found"}, 404
