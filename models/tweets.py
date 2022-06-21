@@ -7,8 +7,10 @@ from config import config
 import torch
 
 
-class Tweet:
-    def __int__(self):
+class TweetModel:
+    def __int__(self, text, lang):
+        self.text= text
+        self.lang = lang
         self.preprocessor = Preprocess
         self.tokenizer = BertTokenizer.from_pretrained(
             config['model_checkpoint'], do_lower_case=True, do_basic_tokenize=True,
@@ -19,10 +21,12 @@ class Tweet:
     def read_model(self):
         self.model = S3Connection().read_model(config['s3_model_dir'], self.model)
 
-    def get_assessment(self, text, lang):
-        text = self.preprocessor(text,lang)
+
+    def get_assessment(self):
+        text = self.preprocessor(self.text,self.lang)
         input_record = self.tokenizer(text, **config['tokenizer_param'])
         input_record = {key: torch.tensor(val).reshape(1,-1) for key, val in input_record.items()}
+        self.read_model()
         output = self.model(**input_record)
 
         return output
