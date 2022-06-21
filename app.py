@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from resources.tweet import TweetResource
+from project.training.model import BERTRegressor
 
 
 app = Flask(__name__)

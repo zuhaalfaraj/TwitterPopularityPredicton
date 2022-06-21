@@ -20,7 +20,7 @@ class TweetModel:
         self.model = S3Connection().read_model(config['s3_model_dir'], self.model)
 
     def get_assessment(self):
-        text = self.preprocessor(self.text,self.lang)
+        text = self.preprocessor.clean(self.text,self.lang)
         input_record = self.tokenizer(text, **config['tokenizer_param'])
         input_record = {key: torch.tensor(val).reshape(1,-1) for key, val in input_record.items()}
         self.read_model()

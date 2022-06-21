@@ -1,5 +1,8 @@
-config = {}
+import torch
 
+
+config = {}
+config['device'] = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 config['tokenizer_param'] = {"add_special_tokens": True, "padding": True, "truncation": True, 'max_length': 200}
 config['model_checkpoint'] ='bert-base-multilingual-cased'
 config['TRAIN_BATCH_SIZE'] = 16

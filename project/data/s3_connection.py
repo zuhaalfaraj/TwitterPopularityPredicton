@@ -3,6 +3,7 @@ import io
 import pandas as pd
 import os
 import torch
+from config import config
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -36,7 +37,7 @@ class S3Connection:
     def read_model(self, model_dir, model):
         mod = self.client.get_object(Bucket=self.bucket_name, Key=model_dir)['Body'].read()
         buffer = io.BytesIO(mod)
-        model.load_state_dict(torch.load(buffer))
+        model = torch.load(buffer, map_location=config['device'])
         return model
 
     def update_data(self, data_dir, new_records_df):
