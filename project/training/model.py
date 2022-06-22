@@ -20,8 +20,5 @@ class BERTRegressor(nn.Module):
         outputs = self.regressor(class_label_output)
         return outputs.squeeze(1)
 
-class BertModel(BertForSequenceClassification):
-    def forward(self, **kwargs):
-        return super().forward(**kwargs).logits
 
 

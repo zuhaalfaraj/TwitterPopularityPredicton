@@ -5,6 +5,7 @@ import os
 import torch
 from config import config
 from dotenv import load_dotenv
+from project.training.model import BERTRegressor
 load_dotenv()
 
 
@@ -31,13 +32,13 @@ class S3Connection:
 
     def upload_model(self, model_dir, model):
         buffer = io.BytesIO()
-        torch.save(model, buffer)
+        torch.save(model.state_dict(), buffer)
         self.client.put_object(Bucket=self.bucket_name, Key=model_dir, Body=buffer.getvalue())
 
     def read_model(self, model_dir, model):
         mod = self.client.get_object(Bucket=self.bucket_name, Key=model_dir)['Body'].read()
         buffer = io.BytesIO(mod)
-        model = torch.load(buffer, map_location=config['device'])
+        model.load_state_dict(torch.load(buffer, map_location=config['device']))
         return model
 
     def update_data(self, data_dir, new_records_df):

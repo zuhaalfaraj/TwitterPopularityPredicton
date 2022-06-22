@@ -13,9 +13,12 @@ class TweetResource(Resource):
                        required=True,
                        help="This field cannot left blank")
 
+    def __init__(self):
+        self.tweet_model = TweetModel()
+
     def get(self):
         data = TweetResource.parse.parse_args()
-        out = TweetModel(*data).get_assessment()
+        out = self.tweet_model.get_assessment(*data)
         if out:
             return {'Assessment result': float(out)}
         return {"message": "not found"}, 404
