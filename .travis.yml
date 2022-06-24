@@ -3,4 +3,4 @@ language: python
 services:
 - docker
 script:
-- docker build -t zuhaalfaraj/twitter_viral .
+- docker run zuhaalfaraj/twitter_viral 
