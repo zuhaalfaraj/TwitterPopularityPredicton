@@ -4,3 +4,4 @@ services:
 - docker
 script:
 - docker run zuhaalfaraj/twitter_viral 
+install: pip --version
