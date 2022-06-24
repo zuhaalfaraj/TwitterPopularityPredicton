@@ -1,5 +1,4 @@
 aniso8601==9.0.1
-anyascii
 boto3==1.24.13
 botocore==1.27.13
 certifi==2022.6.15
