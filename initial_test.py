@@ -1,6 +1,4 @@
 from app import create_app
-import pytest
-
 
 def test_case():
     app = create_app()
