@@ -3,5 +3,5 @@ language: python
 services:
 - docker
 script:
-- docker run CI=true zuhaalfaraj/twitter_viral
+- docker run zuhaalfaraj/twitter_viral_dev
 install: pip --version
